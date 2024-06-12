@@ -14,11 +14,11 @@ module "alb_sg" {
 }
 
 resource "aws_lb" "lb" {
-  name               = var.alb_name
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [module.alb_sg.security_group_id]
-  subnets            = data.aws_subnets.pub_subnets.ids
+  name                       = var.alb_name
+  internal                   = false
+  load_balancer_type         = "application"
+  security_groups            = [module.alb_sg.security_group_id]
+  subnets                    = data.aws_subnets.pub_subnets.ids
   enable_deletion_protection = false
 }
 
@@ -28,16 +28,17 @@ resource "aws_lb_listener" "listener" {
   protocol          = "HTTP"
 
   default_action {
-    type = "forward"
+    type             = "forward"
     target_group_arn = aws_lb_target_group.target.arn
   }
 }
 
 resource "aws_lb_target_group" "target" {
-  name     = var.ecs_service_target_group_name
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = data.aws_vpc.vpc.id
+  name        = var.ecs_service_target_group_name
+  port        = var.ecs_service_port
+  protocol    = "HTTP"
+  vpc_id      = data.aws_vpc.vpc.id
+  target_type = "ip"
 
   health_check {
     interval            = 30
@@ -47,6 +48,7 @@ resource "aws_lb_target_group" "target" {
     healthy_threshold   = 5
     unhealthy_threshold = 2
   }
+
 }
 
 # module "alb" {
