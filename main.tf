@@ -14,9 +14,9 @@ module "ecs_cluster" {
   }
 }
 
-################################################################################
+###############################################################################
 # Service
-################################################################################
+###############################################################################
 module "ecs_service" {
   source = "terraform-aws-modules/ecs/aws//modules/service"
   name   = var.ecs_service_name
@@ -44,7 +44,7 @@ module "ecs_service" {
   container_definitions = {
     (var.ecs_service_name) = {
       cpu       = var.ecs_service_app_cpu
-      memory    = var.ecs_service_app_limit
+      memory    = var.ecs_service_app_memory
       essential = true
       image     = var.ecs_service_container_image
       port_mappings = [
@@ -60,7 +60,7 @@ module "ecs_service" {
   }
   load_balancer = {
     service = {
-      target_group_arn = element(module.alb.target_group_arns, 0)
+      target_group_arn = aws_lb_target_group.target.arn
       container_name   = var.ecs_service_name
       container_port   = var.ecs_service_port
     }

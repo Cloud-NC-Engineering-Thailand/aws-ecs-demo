@@ -69,7 +69,7 @@ variable "ecs_service_app_cpu" {
   type        = number
 }
 
-variable "ecs_service_app_limit" {
+variable "ecs_service_app_memory" {
   description = "Memory allocation for the application in the ECS service."
   type        = number
 }
